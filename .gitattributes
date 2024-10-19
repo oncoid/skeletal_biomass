@@ -1,0 +1,14 @@
+data/paleo_meso_ceno_data_june_paleogeography.csv filter=lfs diff=lfs merge=lfs -text
+data/paleo_meso_ceno_data_june_period_level.csv filter=lfs diff=lfs merge=lfs -text
+data/pbdb_occurrence_data/all_lithology/pbdb.cleaned.protists.csv filter=lfs diff=lfs merge=lfs -text
+data/pbdb_occurrence_data/all_lithology/pbdb.cleaned.algae.csv filter=lfs diff=lfs merge=lfs -text
+data/pbdb_occurrence_data/all_lithology/pbdb.cleaned.animals.csv filter=lfs diff=lfs merge=lfs -text
+data/pbdb_occurrence_data/carbonate_only/pbdb.cleaned.Phanerozoic.carbonates.algae.occurrences.csv filter=lfs diff=lfs merge=lfs -text
+data/pbdb_occurrence_data/carbonate_only/pbdb.cleaned.Phanerozoic.carbonates.animals.occurrences.csv filter=lfs diff=lfs merge=lfs -text
+data/pbdb_occurrence_data/carbonate_only/pbdb.cleaned.Phanerozoic.carbonates.protists.occurrences.csv filter=lfs diff=lfs merge=lfs -text
+data/SQS_diversity_data/animal_diversity.csv filter=lfs diff=lfs merge=lfs -text
+data/SQS_diversity_data/animal_diversity_carbonates_only.csv filter=lfs diff=lfs merge=lfs -text
+data/SQS_diversity_data/protist_diversity.csv filter=lfs diff=lfs merge=lfs -text
+data/SQS_diversity_data/protist_diversity_carbonates_only.csv filter=lfs diff=lfs merge=lfs -text
+data/SQS_diversity_data/alga_diversity.csv filter=lfs diff=lfs merge=lfs -text
+data/SQS_diversity_data/alga_diversity_carbonates_only.csv filter=lfs diff=lfs merge=lfs -text
