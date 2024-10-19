@@ -40,7 +40,7 @@ def get_stats(data,skeletal_grain,time_period):
     time_period
     for e in time_periods:
         temp = data[data[time_period] == e].copy()
-    
+        temp = temp[temp[skeletal_grain]!=-1]
         time_sg.append(temp['mean_ma'].mean())
         
         mean_sg.append(temp[skeletal_grain].mean())
@@ -141,19 +141,13 @@ def load_data(file_path, low_memory=True):
 
 def load_occurrence_data(data_type):
     if data_type == 'carbonate_only':
-        animal_occurrence = load_data('./data/pbdb.cleaned.Phanerozoic.carbonates.animals.occurrences.csv')
-        algae_occurrence = load_data('./data/pbdb.cleaned.Phanerozoic.carbonates.algae.occurrences.csv')
-        protist_occurrence = load_data('./data/pbdb.cleaned.Phanerozoic.carbonates.protists.occurrences.csv')
+        animal_occurrence = load_data(f'./data/pbdb_occurrence_data/{data_type}/pbdb.cleaned.Phanerozoic.carbonates.animals.occurrences.csv',low_memory=False)
+        algae_occurrence = load_data(f'./data/pbdb_occurrence_data/{data_type}/pbdb.cleaned.Phanerozoic.carbonates.algae.occurrences.csv',low_memory=False)
+        protist_occurrence = load_data(f'./data/pbdb_occurrence_data/{data_type}/pbdb.cleaned.Phanerozoic.carbonates.protists.occurrences.csv',low_memory=False)
     elif data_type == 'all_lithology':
-        animal_occurrence_camb = pd.read_csv('./data/pbdb.cleaned.Cambrian.animals.csv')
-        animal_occurrence_postcamb = pd.read_csv('./data/pbdb.cleaned.postCambrian.animals.csv')
-        animal_occurrence = pd.concat([animal_occurrence_camb, animal_occurrence_postcamb])
-
-        alga_occurrence_camb = pd.read_csv('./data/pbdb.cleaned.Cambrian.algae.csv')
-        alga_occurrence_postcamb = pd.read_csv('./data/pbdb.cleaned.postCambrian.algae.csv')
-        algae_occurrence = pd.concat([alga_occurrence_camb, alga_occurrence_postcamb])
-
-        protist_occurrence = pd.read_csv('./data/pbdb.cleaned.postCambrian.protists.csv')
+        animal_occurrence = pd.read_csv(f'./data/pbdb_occurrence_data/{data_type}/pbdb.cleaned.animals.csv',low_memory=False)
+        algae_occurrence = pd.read_csv(f'./data/pbdb_occurrence_data/{data_type}/pbdb.cleaned.algae.csv',low_memory=False)
+        protist_occurrence = pd.read_csv(f'./data/pbdb_occurrence_data/{data_type}/pbdb.cleaned.protists.csv',low_memory=False)
     else:
         print('Use either ~carbonate_only~ OR ~all_lithology~ as data_type')
     return animal_occurrence, algae_occurrence, protist_occurrence
@@ -247,4 +241,30 @@ def get_skeletal_animal_phyllum_occurrence(animal_occurrence, algae_occurrence, 
     animal_relative_occurrence_phylum = animal_relative_occurrence_phylum[~(animal_relative_occurrence_phylum['index'] == 'Pridoli')]
     
     return skeletal_occurrence, animal_relative_occurrence_phylum
+
+
+def get_sep_epoch(time, time_epoch):
+    if time == 0:
+        return 'Holocene'
+    else:
+        return time_epoch[(time_epoch['max_ma']>=time) & (time_epoch['min_ma']<time)]['interval_name'].values[0]
     
+def load_sepkoski_diversity_data():
+    time_file = './data/timeScale.xlsx'
+    time = pd.read_excel(time_file,sheet_name='Sheet1')
+    time_epoch = get_timesubset(time,4,541)
+
+    sepkoski_div = pd.read_excel('./data/SQS_diversity_data/sepkoski_diversity.xlsx')
+    sepkoski_div = sepkoski_div[sepkoski_div['Date']<=541]
+    sepkoski_div['epoch'] = sepkoski_div['Date'].apply(lambda x: get_sep_epoch(x, time_epoch))
+
+
+    
+    sepkoski_div_epoch = []
+    for epoch in sepkoski_div.epoch.unique():
+        subset = sepkoski_div[sepkoski_div['epoch'] == epoch]
+        sepkoski_div_epoch.append(dict(epoch = epoch, diversity = subset['Total D'].mean()))
+    sepkoski_div_epoch = pd.DataFrame(sepkoski_div_epoch)
+    
+    sepkoski_div_epoch['mean_ma'] = sepkoski_div_epoch['epoch'].apply(lambda x: time_epoch[time_epoch['interval_name'] == x]['mean_ma'].values[0])
+    return sepkoski_div_epoch
