@@ -22,7 +22,7 @@ def expand_data(data):
 
 def get_timesubset(time,scale,max_time):
     
-    return time[(time['scale_level']==scale) & (time.max_ma<=max_time)]
+    return time[(time['scale_level']==scale) & (time.max_ma<=max_time)].copy()
 
 def get_stats(data,skeletal_grain,time_period):
     '''data: dataframe with all the values
@@ -139,17 +139,11 @@ def load_data(file_path, low_memory=True):
     return occurrence[['phylum', 'early_interval']]
 
 
-def load_occurrence_data(data_type):
-    if data_type == 'carbonate_only':
-        animal_occurrence = load_data(f'./data/pbdb_occurrence_data/{data_type}/pbdb.cleaned.Phanerozoic.carbonates.animals.occurrences.csv',low_memory=False)
-        algae_occurrence = load_data(f'./data/pbdb_occurrence_data/{data_type}/pbdb.cleaned.Phanerozoic.carbonates.algae.occurrences.csv',low_memory=False)
-        protist_occurrence = load_data(f'./data/pbdb_occurrence_data/{data_type}/pbdb.cleaned.Phanerozoic.carbonates.protists.occurrences.csv',low_memory=False)
-    elif data_type == 'all_lithology':
-        animal_occurrence = pd.read_csv(f'./data/pbdb_occurrence_data/{data_type}/pbdb.cleaned.animals.csv',low_memory=False)
-        algae_occurrence = pd.read_csv(f'./data/pbdb_occurrence_data/{data_type}/pbdb.cleaned.algae.csv',low_memory=False)
-        protist_occurrence = pd.read_csv(f'./data/pbdb_occurrence_data/{data_type}/pbdb.cleaned.protists.csv',low_memory=False)
-    else:
-        print('Use either ~carbonate_only~ OR ~all_lithology~ as data_type')
+def load_occurrence_data():
+    animal_occurrence = pd.read_csv(f'./data/pbdb_occurrence_data/pbdb.cleaned.animals.csv',low_memory=False)
+    algae_occurrence = pd.read_csv(f'./data/pbdb_occurrence_data/pbdb.cleaned.algae.csv',low_memory=False)
+    protist_occurrence = pd.read_csv(f'./data/pbdb_occurrence_data/pbdb.cleaned.protists.csv',low_memory=False)
+    
     return animal_occurrence, algae_occurrence, protist_occurrence
 
 
